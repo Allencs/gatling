@@ -43,7 +43,7 @@
           <!-- 测试脚本 -->
           <simulationClass>BasicSimulation</simulationClass>
           <!-- 结果输出地址 -->
-          <resultsFolder>D:/sgmuserprofile/pt543f/Desktop/gatling</resultsFolder>
+<!--          <resultsFolder>*</resultsFolder>-->
         </configuration>
       </plugin>
     </plugins>
