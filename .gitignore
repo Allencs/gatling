@@ -1,6 +1,7 @@
 /target/
 MyScala.scala
 /results/
+/src/resources/
 
 ### IntelliJ IDEA ###
 .idea

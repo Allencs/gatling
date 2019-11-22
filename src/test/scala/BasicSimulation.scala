@@ -6,10 +6,10 @@ import scala.concurrent.duration._
 
 class BasicSimulation extends Simulation{
 
-  private var _token:String = ""
+  var _token:String = ""
 
   val httpProtocol = http
-    .baseUrl("http://localhost:8080")
+    .baseUrl("http://192.168.3.13:8080")
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
     .doNotTrackHeader("1")
     .acceptLanguageHeader("en-US,en;q=0.5")
@@ -107,7 +107,7 @@ class BasicSimulation extends Simulation{
      */
   ).protocols(httpProtocol)
       .assertions(
-        global.responseTime.max.lt(100),
+        global.responseTime.max.lt(300),
         details("token").successfulRequests.percent.gt(99)
       )
 
