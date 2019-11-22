@@ -1,4 +1,6 @@
 /target/
+MyScala.scala
+/results/
 
 ### IntelliJ IDEA ###
 .idea

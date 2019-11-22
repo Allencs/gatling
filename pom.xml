@@ -39,11 +39,19 @@
         <groupId>io.gatling</groupId>
         <artifactId>gatling-maven-plugin</artifactId>
         <version>${gatling-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <!--设定在集成测试阶段测试-->
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
           <!-- 测试脚本 -->
           <simulationClass>BasicSimulation</simulationClass>
           <!-- 结果输出地址 -->
-<!--          <resultsFolder>*</resultsFolder>-->
+          <resultsFolder>./results/</resultsFolder>
         </configuration>
       </plugin>
     </plugins>
