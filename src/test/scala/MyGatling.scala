@@ -1,17 +1,17 @@
-package src.test.scala
-
 import java.util.concurrent.TimeUnit
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import scala.concurrent.duration._
 
 
-class BasicSimulation extends Simulation{
+class MyGatling extends Simulation{
+
+  val csvFeeder = csv("feed_file.csv").eager.random
 
   var _token:String = ""
 
   val httpProtocol = http
-    .baseUrl("http://192.168.3.13:8080")
+    .baseUrl("http://localhost:8080")
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
     .doNotTrackHeader("1")
     .acceptLanguageHeader("en-US,en;q=0.5")
@@ -44,17 +44,23 @@ class BasicSimulation extends Simulation{
     _token = token
   }
 
+
+
   object Token{
+
     val get_token = exec(http("token")
       .get("/pftest/myApi/token")
       .check(bodyString.saveAs("token"),
              status.is(200).saveAs("isOK"),
              header("Content-Type").saveAs("header"))  // 保存请求响应到参数
     )
+      .exec().feed(csvFeeder)
+
       .exec{session =>
         /*session是虚拟用户的状态,包含键字符串的映射Map[String, Any]
          */
-//        println("session:" + session)
+//        println("feed_file value is ==>:" + session("username").as[String] + " "
+//                                          + session("password").as[String])  // 打印参数化文件取值
 
         token_=(session("token").as[String])
 //        println("token value is: " + session("token").as[String])
