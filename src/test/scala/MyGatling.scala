@@ -3,14 +3,14 @@ import io.gatling.http.Predef._
 import scala.concurrent.duration._
 
 
-class MyGatling extends Simulation{
+class MyGatling extends Simulation {
 
   val csvFeeder = csv("feed_file.csv").eager.random
 
   var _token:String = ""
 
   val httpProtocol = http
-    .baseUrl("http://localhost:8080")
+    .baseUrl("http://10.203.29.217:8085")
     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
     .doNotTrackHeader("1")
     .acceptLanguageHeader("en-US,en;q=0.5")
@@ -102,7 +102,18 @@ class MyGatling extends Simulation{
   }
 
   setUp(
-    test_myApi.inject(rampUsers(2) during(2 seconds))
+//    test_myApi.inject(rampUsers(100) during(10 seconds))
+
+//    test_myApi.inject(incrementUsersPerSec(2)
+//      .times(3)
+//      .eachLevelLasting(5 seconds)
+//      .separatedByRampsLasting(Duration.apply(30, SECONDS))
+//      .startingFrom(2))
+
+//    test_myApi.inject(constantUsersPerSec(2) during(5 seconds))
+
+//    test_myApi.inject(heavisideUsers(100) during(10 seconds))
+
     /*注入用户模式：
       atOnceUsers
       rampUsers
