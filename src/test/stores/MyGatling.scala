@@ -17,32 +17,28 @@ class MyGatling extends Simulation {
     .acceptEncodingHeader("gzip, deflate")
     .userAgentHeader("Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0")
 
-  /*
+
   val scenario_one = scenario("BasicSimulation").during(Duration.apply(5, SECONDS)){
-    exec(http("token")
-        .get("/pftest/myApi/token").check(bodyString.saveAs("token"),
-      status.is(200), header("Content-Type").saveAs("header"))  // 保存请求响应到参数
+    exec(http("page")
+        .get("/pftest/testmachine/10k")
+        .check(status.is(200))
+
     )
       .exec{session =>
         /*session是虚拟用户的状态,包含键字符串的映射Map[String, Any]
          */
 //        println("session:" + session)
-        token = session("token").as[String]
-        println("token value is: " + token)
-        println("header: " + session("header").as[String])
+
         session
       }
 
 
   }
 
-   */
-
 
   def token_= (token:String): Unit = {
     _token = token
   }
-
 
 
   object Token{
@@ -53,11 +49,10 @@ class MyGatling extends Simulation {
              status.is(200).saveAs("isOK"),
              header("Content-Type").saveAs("header"))  // 保存请求响应到参数
     )
-      .exec().feed(csvFeeder)
+
+      .exec(feed(csvFeeder))
 
       .exec{session =>
-        /*session是虚拟用户的状态,包含键字符串的映射Map[String, Any]
-         */
 //        println("feed_file value is ==>:" + session("username").as[String] + " "
 //                                          + session("password").as[String])  // 打印参数化文件取值
 
@@ -67,6 +62,7 @@ class MyGatling extends Simulation {
         session
       }
   }
+
 
   object PersonInfo{
 
@@ -84,6 +80,13 @@ class MyGatling extends Simulation {
         .check(bodyString.saveAs("personInfo"),
                substring("Python"))
       )
+        .exec(
+        http("newPerson")
+          .post("/pftest/myApi/post")
+          .headers(headers)
+          .body(StringBody("""{"username": "GoodBoy", "pw": "root123"}""")).asJson
+          .check(substring("PerformanceTestEngineer"))
+      )
         .exec{session =>
 //          println(session("personInfo").as[String])
           session
@@ -93,26 +96,30 @@ class MyGatling extends Simulation {
   }
 
 
-  val test_myApi = scenario("myApi").during(Duration.apply(30, SECONDS)){
+  val test_myApi = scenario("myApi").during(Duration.apply(300, SECONDS)){
     exec(Token.get_token, PersonInfo.get_info)  //, PersonInfo.get_info
   }
+
 
   before{
     println("Simulation is about to start!")
   }
 
+
   setUp(
 //    test_myApi.inject(rampUsers(100) during(10 seconds))
 
-//    test_myApi.inject(incrementUsersPerSec(2)
-//      .times(3)
-//      .eachLevelLasting(5 seconds)
-//      .separatedByRampsLasting(Duration.apply(30, SECONDS))
-//      .startingFrom(2))
+//    test_myApi.inject(atOnceUsers(2))
+
+//    test_myApi.inject(incrementUsersPerSec(1)
+//      .times(2)
+//      .eachLevelLasting(1 seconds)
+//      .separatedByRampsLasting(Duration.apply(20, SECONDS))
+//      .startingFrom(5))
 
 //    test_myApi.inject(constantUsersPerSec(2) during(5 seconds))
 
-//    test_myApi.inject(heavisideUsers(100) during(10 seconds))
+    test_myApi.inject(heavisideUsers(10) during(100 seconds))
 
     /*注入用户模式：
       atOnceUsers
@@ -129,9 +136,10 @@ class MyGatling extends Simulation {
         details("token").successfulRequests.percent.gt(99)
       )
 
+
   after {
     println("Simulation is finished!")
-}
+  }
 
 }
 /*说明：
